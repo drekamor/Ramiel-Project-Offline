@@ -1,10 +1,7 @@
 package gov.kallos.ramiel.client.gui.model;
 
-import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -23,7 +20,7 @@ public class Slider extends Clickable {
 
     public Slider(@Nullable Text text, String suffix, double value, double min, double max, double step) {
         if (text == null) {
-            text = new LiteralText("");
+            text = Text.literal("");
         }
         this.text = text;
         this.suffix = suffix;
@@ -43,7 +40,7 @@ public class Slider extends Clickable {
 
     private void reconstructButton() {
         boolean wasEnabled = this.slider.active;
-        this.slider = new SliderAbstractWidget(this.slider.x, this.slider.y, text.getString(), suffix,
+        this.slider = new SliderAbstractWidget(this.slider.getX(), this.slider.getY(), text.getString(), suffix,
                 this.getSize().x, this.getSize().y, slider.min, slider.max, slider.step, currentValue) {};
         this.slider.active = wasEnabled;
     }
@@ -51,8 +48,8 @@ public class Slider extends Clickable {
     @Override
     public void setPos(@NotNull Vec2 pos) {
         super.setPos(pos);
-        this.slider.x = pos.x;
-        this.slider.y = pos.y;
+        this.slider.setX(pos.x);
+        this.slider.setY(pos.y);
     }
 
     private abstract class SliderAbstractWidget extends SliderWidget{
@@ -85,7 +82,7 @@ public class Slider extends Clickable {
 
         @Override
         protected void updateMessage() {
-            this.setMessage(new LiteralText(title + " " + this.value + " " + suffix));
+            this.setMessage(Text.literal(title + " " + this.value + " " + suffix));
         }
 
         @Override

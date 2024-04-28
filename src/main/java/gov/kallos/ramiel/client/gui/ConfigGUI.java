@@ -3,12 +3,10 @@ package gov.kallos.ramiel.client.gui;
 import gov.kallos.ramiel.client.RamielClient;
 import gov.kallos.ramiel.client.config.DefaultValues;
 import gov.kallos.ramiel.client.config.RGBValue;
-import gov.kallos.ramiel.client.config.RamielConfiguration;
 import gov.kallos.ramiel.client.gui.model.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -29,7 +27,7 @@ public class ConfigGUI extends GuiRoot {
     private int clicksPerSecond = DefaultValues.CLICKS_PER_SECOND;
 
     public ConfigGUI(Screen parentScreen) {
-        super(parentScreen, (Text) new LiteralText(Formatting.GRAY + "Ramiel-Project " + RamielClient.VERSION + "-" + RamielClient.STABILITY));
+        super(parentScreen, Text.literal(Formatting.GRAY + "Ramiel-Project " + RamielClient.VERSION + "-" + RamielClient.STABILITY));
     }
 
     @Override
@@ -121,12 +119,12 @@ public class ConfigGUI extends GuiRoot {
         Button hoopRenderButton = new Button("Render Hoops: " + getBooleanString(RamielClient.getInstance().getConfig().renderHoops()));
         hoopRenderButton.onClick(b -> {
             //Toggles hoops.
-            hoopRenderButton.setText(new LiteralText("Render Hoops: " + getBooleanString(RamielClient.getInstance().getConfig().toggleRenderHoops())));
+            hoopRenderButton.setText(Text.literal("Render Hoops: " + getBooleanString(RamielClient.getInstance().getConfig().toggleRenderHoops())));
         });
         decorativeToggles.add(hoopRenderButton);
         Button hitboxRenderButton = new Button("Render Hitboxes: " + getBooleanString(RamielClient.getInstance().getConfig().renderHitboxes()));
         hitboxRenderButton.onClick(b -> {
-           hitboxRenderButton.setText(new LiteralText("Render Hitboxes: " + getBooleanString(RamielClient.getInstance().getConfig().toggleRenderHitboxes())));
+           hitboxRenderButton.setText(Text.literal("Render Hitboxes: " + getBooleanString(RamielClient.getInstance().getConfig().toggleRenderHitboxes())));
         });
         decorativeToggles.add(hitboxRenderButton);
         root.add(decorativeToggles);
@@ -159,7 +157,7 @@ public class ConfigGUI extends GuiRoot {
         Button autoclickerButton = new Button("Autoclicker: " + getBooleanString(RamielClient.getInstance().getConfig().autoclickerEnabled()));
         autoclickerButton.onClick(client -> {
             boolean autoclicker = RamielClient.getInstance().getConfig().toggleAutoclicker();
-            autoclickerButton.setText(new LiteralText("Autoclicker: " + getBooleanString(autoclicker)));
+            autoclickerButton.setText(Text.literal("Autoclicker: " + getBooleanString(autoclicker)));
         });
         autoClickerList.add(autoclickerButton);
         TextField clicksPerSecondField = new TextField(b -> {
@@ -241,7 +239,7 @@ public class ConfigGUI extends GuiRoot {
         int right = left + 160;
         int offset = this.height / 6 - 18;
 
-        TextFieldWidget textTestWidget = new TextFieldWidget(textRenderer, left, height / 6, 60, 20, new LiteralText("Test Box"));
+        TextFieldWidget textTestWidget = new TextFieldWidget(textRenderer, left, height / 6, 60, 20, Text.literal("Test Box"));
         addDrawable(textTestWidget);
         offset += 24;
         

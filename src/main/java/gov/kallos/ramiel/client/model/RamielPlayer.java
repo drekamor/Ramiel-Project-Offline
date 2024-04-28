@@ -11,15 +11,12 @@ public class RamielPlayer {
 
     private final String username;
 
-    private String main;
-
     //In milliseconds
     private long lastUpdate;
 
     public RamielPlayer(String username, Standing standing) {
         this.standing = standing;
         this.username = username;
-        this.main = null;
         this.location = null;
         this.lastUpdate = 0;
     }
@@ -28,7 +25,6 @@ public class RamielPlayer {
         this.standing = standing;
         this.username = username;
         this.location = location;
-        this.main = null;
         this.lastUpdate = System.currentTimeMillis();
     }
 
@@ -50,12 +46,6 @@ public class RamielPlayer {
     public String getUsername() {
         return username;
     }
-
-    public String getMain() { return main; }
-
-    public boolean isAlt() { return main != null; }
-
-    public void setMain(String main) { this.main = main; }
 
     public void setStanding(Standing standing) {
         this.standing = standing;

@@ -2,14 +2,12 @@ package gov.kallos.ramiel.client.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import gov.kallos.ramiel.client.RamielClient;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class BoxUtil {
     public static void drawBox(MatrixStack matrix, Tessellator tes, BufferBuilder vertices, Entity entity, float x, float y, float z, float red, float green, float blue, float red2, float green2, float blue2, float alpha, float lineWidth) {
@@ -30,12 +28,12 @@ public class BoxUtil {
 
         matrices.push();
         RenderSystem.lineWidth(lineWidth * 1.1F);
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.lineWidth(3.0F);
-        RenderSystem.disableTexture();
+        RenderSystem.disableBlend();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
@@ -69,7 +67,7 @@ public class BoxUtil {
         buffer.vertex(matrix4f, i+ x, j + y, h + z).color(red2, green2, blue2, alpha).normal(matrix3f, 0.0F, 0.0F, 1.0F).next(); /**LOW3*/
         buffer.vertex(matrix4f, i+ x, j + y, k + z).color(red2, green2, blue2, alpha).normal(matrix3f, 0.0F, 0.0F, 1.0F).next(); /**LOW3*/
         tes.draw();
-        RenderSystem.enableTexture();
+        RenderSystem.enableBlend();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
         matrices.pop();

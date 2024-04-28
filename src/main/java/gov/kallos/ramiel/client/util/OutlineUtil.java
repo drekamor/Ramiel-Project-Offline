@@ -34,8 +34,8 @@ public class OutlineUtil extends LivingEntityRenderer<PlayerEntity, PlayerEntity
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.disableTexture();
-            RenderSystem.setShader(GameRenderer::getPositionShader);
+            RenderSystem.disableBlend();
+            RenderSystem.setShader(GameRenderer::getPositionProgram);
 
             float glowingColorRed = 1.0f;
             float glowingColorGreen = 1.0f;
@@ -45,7 +45,7 @@ public class OutlineUtil extends LivingEntityRenderer<PlayerEntity, PlayerEntity
             RenderSystem.setShaderColor(glowingColorRed, glowingColorGreen, glowingColorBlue, glowingColorAlpha);
             super.render(player, yaw, tickDelta, matrices, vertexConsumers, light);
 
-            RenderSystem.enableTexture();
+            RenderSystem.enableBlend();
             RenderSystem.disableBlend();
             RenderSystem.enableDepthTest();
         }

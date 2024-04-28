@@ -2,7 +2,6 @@ package gov.kallos.ramiel.client.gui.model;
 
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -13,18 +12,18 @@ public class Button extends Clickable {
     private ButtonWidget button;
 
     public Button(@Nullable String text) {
-        this((Text)(text == null ? null : new LiteralText(text)));
+        this((Text)(text == null ? null : Text.literal(text)));
     }
 
     public Button(@Nullable Text text) {
         if (text == null) {
-            text = new LiteralText("");
+            text = Text.literal("");
         }
         this.text = text;
         int textWidth = mc.textRenderer.getWidth((StringVisitable)text);
         this.setMinSize(new Vec2(Math.max((int)20, (int)(textWidth + 10)), 20));
         this.setMaxSize(new Vec2(380, 20));
-        this.button = new ButtonWidget(0, 0, this.getSize().x, this.getSize().y, text, null);
+        this.button = ButtonWidget.builder(text, null).dimensions(0, 0, this.getSize().x, this.getSize().y).build();
     }
 
     public Text getText() {
@@ -57,8 +56,8 @@ public class Button extends Clickable {
     @Override
     public void setPos(@NotNull Vec2 pos) {
         super.setPos(pos);
-        this.button.x = pos.x;
-        this.button.y = pos.y;
+        this.button.setX(pos.x);
+        this.button.setY(pos.y);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class Button extends Clickable {
 
     private void reconstructButton() {
         boolean wasEnabled = this.button.active;
-        this.button = new ButtonWidget(this.button.x, this.button.y, this.getSize().x, this.getSize().y, this.text, null);
+        this.button = ButtonWidget.builder(this.text, null).dimensions(this.button.getX(), this.button.getY(), this.getSize().x, this.getSize().y).build();
         this.button.active = wasEnabled;
     }
 }

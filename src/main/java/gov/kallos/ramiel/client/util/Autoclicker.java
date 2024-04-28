@@ -3,9 +3,7 @@ package gov.kallos.ramiel.client.util;
 import gov.kallos.ramiel.client.RamielClient;
 import gov.kallos.ramiel.client.mixin.MinecraftClientMixin;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
@@ -13,12 +11,6 @@ import org.lwjgl.glfw.GLFW;
 public class Autoclicker {
     int timerTick = 0;
     double delay;
-
-    /**
-     * Autoclicker const
-     * @param enabled enabled
-     * @param delay in ticks
-     */
     public Autoclicker() {
         init();
     }

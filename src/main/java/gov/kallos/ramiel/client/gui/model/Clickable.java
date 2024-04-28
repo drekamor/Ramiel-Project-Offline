@@ -40,7 +40,7 @@ public class Clickable extends GuiElement {
         if (this.clickHandler == null) {
             return false;
         }
-        mc.getSoundManager().play((SoundInstance) PositionedSoundInstance.master((SoundEvent) SoundEvents.UI_BUTTON_CLICK, (float)1.0f));
+        mc.getSoundManager().play((SoundInstance) PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, (float)1.0f));
         try {
             this.clickHandler.accept((Clickable) this);
         } catch (Throwable e) {

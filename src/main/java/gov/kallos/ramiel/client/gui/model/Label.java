@@ -1,7 +1,7 @@
 package gov.kallos.ramiel.client.gui.model;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -76,10 +76,10 @@ public class Label extends Clickable {
         int n = this.getSize().y;
         Objects.requireNonNull((Object) mc.textRenderer);
         int dy = (n - 9) / 2;
-        LiteralText displayText = new LiteralText(this.text);
+        MutableText displayText = Text.literal(this.text);
         if (this.clickHandler != null && this.isMouseInside(mouse)) {
-            displayText.setStyle(displayText.getStyle().withUnderline(Boolean.valueOf((boolean)true)));
+            displayText.setStyle(displayText.getStyle().withUnderline(Boolean.TRUE));
         }
-        mc.textRenderer.drawWithShadow(poseStack, (Text)displayText, (float)x, (float)(this.getPos().y + 1 + dy), this.color);
+        mc.textRenderer.drawWithShadow(poseStack, displayText, (float)x, (float)(this.getPos().y + 1 + dy), this.color);
     }
 }

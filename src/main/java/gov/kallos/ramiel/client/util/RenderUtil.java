@@ -6,23 +6,23 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
+import net.minecraft.text.Text;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 public class RenderUtil {
 
-    public static void drawWaypoint(MatrixStack m, TextRenderer text, String name, int colorhex, float x, float y, float z, float size, Quaternion rotate) {
+    public static void drawWaypoint(MatrixStack m, TextRenderer text, String name, int colorhex, float x, float y, float z, float size, Quaternionf rotate) {
         int i = text.getWidth(name) / 2 + 2;
         m.push();
         m.translate((double)x, (double)y, (double)z);
         m.multiply(rotate);
         m.scale(-size, -size, size);
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
-        RenderSystem.disableTexture();
+        RenderSystem.disableBlend();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
         Matrix4f mat = m.peek().getPositionMatrix();
@@ -43,9 +43,9 @@ public class RenderUtil {
         bb.vertex(mat, 0.0F, 12.0F, 0.0F).color(colorhex >> 16 & 255, colorhex >> 8 & 255, colorhex & 255, 255).next();
         bb.vertex(mat, -4.0F, 16.0F, 0.0F).color(colorhex >> 16 & 255, colorhex >> 8 & 255, colorhex & 255, 255).next();
         tes.draw();
-        RenderSystem.enableTexture();
+        RenderSystem.enableBlend();
         VertexConsumerProvider.Immediate wvc = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-        text.draw(new LiteralText(name), (float)(-i), 0.0F, colorhex, false, mat, wvc, true, 0, 15728880);
+        text.draw(Text.literal(name), (float)(-i), 0.0F, colorhex, false, mat, wvc, TextRenderer.TextLayerType.SEE_THROUGH, 0, 15728880);
         wvc.draw();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
@@ -56,12 +56,12 @@ public class RenderUtil {
     public static void drawHoop(MatrixStack m, float xPos, float yPos, float zPos, int color, float alpha) {
         m.push();
         m.translate(xPos, yPos, zPos);
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.lineWidth(3.0F);
-        RenderSystem.disableTexture();
+        RenderSystem.disableBlend();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
         Matrix4f mat = m.peek().getPositionMatrix();
@@ -81,7 +81,7 @@ public class RenderUtil {
             z = s * t + c * z;
         }
         tesselator.draw();
-        RenderSystem.enableTexture();
+        RenderSystem.enableBlend();
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
         m.pop();

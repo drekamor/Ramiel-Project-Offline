@@ -22,7 +22,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.hit.HitResult;
 import org.lwjgl.glfw.GLFW;
@@ -132,8 +132,8 @@ public class RamielClient implements ClientModInitializer {
             while(modEnableBind.wasPressed()) {
                 enabled = !enabled;
                 String status = enabled ? "Enabled" : "Disabled";
-                client.player.sendMessage(new LiteralText(PREFIX + Formatting.GRAY + "Visuals " + status), false);
-                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                client.player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + "Visuals " + status), false);
+                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1, 1);
             }
             while(modConfigScreenBind.wasPressed()) {
                 MinecraftClient.getInstance().setScreen(new ConfigGUI(MinecraftClient.getInstance().currentScreen));
@@ -150,8 +150,8 @@ public class RamielClient implements ClientModInitializer {
                         maxWaypointDist = maxWaypointDist + 100;
                     }
                 }
-                client.player.sendMessage(new LiteralText(PREFIX + Formatting.GRAY + "Increased Waypoint Distance to " + Formatting.AQUA + maxWaypointDist), false);
-                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, 1, 1);
+                client.player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + "Increased Waypoint Distance to " + Formatting.AQUA + maxWaypointDist), false);
+                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM.value(), 1, 1);
             }
             while(decrementDistanceBind.wasPressed()) {
                 if(maxWaypointDist <= 0) {
@@ -165,8 +165,8 @@ public class RamielClient implements ClientModInitializer {
                         maxWaypointDist = maxWaypointDist - 100;
                     }
                 }
-                client.player.sendMessage(new LiteralText(PREFIX + Formatting.GRAY + "Decreased Waypoint Distance to " + Formatting.AQUA + maxWaypointDist), false);
-                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                client.player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + "Decreased Waypoint Distance to " + Formatting.AQUA + maxWaypointDist), false);
+                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1, 1);
             }
             while(focusPlayerBind.wasPressed()) {
                 if(getPlayerUnderCrosshair() != null) {
@@ -190,6 +190,6 @@ public class RamielClient implements ClientModInitializer {
     }
 
     public void sendPlayerMessage(String text) {
-        MinecraftClient.getInstance().player.sendMessage(new LiteralText(PREFIX + Formatting.GRAY + " " + text), false);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + " " + text), false);
     }
 }
