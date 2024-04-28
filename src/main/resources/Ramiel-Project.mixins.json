@@ -7,8 +7,7 @@
   ],
   "client": [
     "WorldRendererMixin",
-    "InGameHudMixin",
-    "MinecraftClientMixin"
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

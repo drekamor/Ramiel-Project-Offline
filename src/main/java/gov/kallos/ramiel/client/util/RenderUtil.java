@@ -52,39 +52,4 @@ public class RenderUtil {
         m.pop();
         RenderSystem.enableDepthTest();
     }
-
-    public static void drawHoop(MatrixStack m, float xPos, float yPos, float zPos, int color, float alpha) {
-        m.push();
-        m.translate(xPos, yPos, zPos);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.lineWidth(3.0F);
-        RenderSystem.disableBlend();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        Matrix4f mat = m.peek().getPositionMatrix();
-        double radius = 1;
-        double theta = 0.19634954084936207;
-        double c = Math.cos((double)theta);
-        double s = Math.sin((double)theta);
-        double x = radius;
-        double z = 0.0;
-        Tessellator tesselator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.getBuffer();
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        for (int circleSegment = 0; circleSegment <= 32; ++circleSegment) {
-            bufferBuilder.vertex(mat, ((float)(xPos + x)), ((float)yPos), ((float)(zPos + z))).color(color >> 16 & 255, color >> 8 & 255, color & 255, 255).next();
-            double t = x;
-            x = c * x - s * z;
-            z = s * t + c * z;
-        }
-        tesselator.draw();
-        RenderSystem.enableBlend();
-        RenderSystem.depthMask(true);
-        RenderSystem.disableBlend();
-        m.pop();
-        RenderSystem.enableDepthTest();
-    }
 }

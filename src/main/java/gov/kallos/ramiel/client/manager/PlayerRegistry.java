@@ -143,9 +143,6 @@ public class PlayerRegistry {
                 JSONObject standObj = (JSONObject) it.next();
                 RamielClient.LOGGER.info("Player JSON Loaded for: " + standObj.getString("username") + " at standing: " + standObj.getString("standing"));
                 RamielPlayer newPlayer = new RamielPlayer(standObj.getString("username"), Standing.valueOf(standObj.getString("standing")));
-                if(!standObj.getString("main").equals("")) {
-                    newPlayer.setMain(standObj.getString("main"));
-                }
                 cachedPlayers.put(standObj.getString("username"), newPlayer);
 
             }

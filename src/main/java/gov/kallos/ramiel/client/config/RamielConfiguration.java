@@ -92,28 +92,7 @@ public class RamielConfiguration {
                 this.enemyRgb = new RGBValue(enemyObj.getInt("r"),
                         enemyObj.getInt("g"), enemyObj.getInt("b"));
             }
-            this.personalSpace = defaultValues ? DefaultValues.DEFAULT_PERSONAL_SPACE : configObject.getInt("personalSpace");
             this.timeToDisappear = defaultValues ? DefaultValues.DEFAULT_DISAPPEAR_TIME : configObject.getInt("timeToDisappear");
-            //Json isn't wonderful and has a tendency to throw exceptions when new values are added. Eventually this will be negated with config versions.
-            try {
-                this.renderHoops = defaultValues ? DefaultValues.RENDER_HOOPS : configObject.getBoolean("renderHoops");
-            } catch (JSONException exception) {
-                //Could not find hoop render. Set default.
-                this.renderHoops = DefaultValues.RENDER_HOOPS;
-            }
-            try {
-                this.renderHitboxes = defaultValues ? DefaultValues.RENDER_HITBOXES : configObject.getBoolean("renderHitboxes");
-            } catch (JSONException exception) {
-                //Could not find hoop render. Set default.
-                this.renderHitboxes = DefaultValues.RENDER_HITBOXES;
-            }
-            try {
-                this.autoclicker = defaultValues ? DefaultValues.AUTOCLICKER : configObject.getBoolean("autoclicker");
-                this.clicksPerSecond = defaultValues ? DefaultValues.CLICKS_PER_SECOND : configObject.getInt("cps");
-            } catch (JSONException exception) {
-                this.autoclicker = DefaultValues.AUTOCLICKER;
-                this.clicksPerSecond = DefaultValues.CLICKS_PER_SECOND;
-            }
             RamielClient.LOGGER.info("Loaded Configuration Successfully.");
             reader.close();
         } catch (FileNotFoundException | SecurityException ex) {
@@ -147,16 +126,8 @@ public class RamielConfiguration {
         colourArray.put( enemyColour);
         configObject.put("colours", colourArray);
 
-        //Personal Space
-        configObject.put("personalSpace", personalSpace);
-
         //Time to Disappear (in minutes)
         configObject.put("timeToDisappear", this.timeToDisappear);
-
-        configObject.put("renderHoops", this.renderHoops);
-        configObject.put("renderHitboxes", this.renderHitboxes);
-        configObject.put("autoclicker", this.autoclicker);
-        configObject.put("cps", this.clicksPerSecond);
 
         try {
             Files.copy(clientConfiguration.toPath(), clientBackupConfiguration.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -227,43 +198,8 @@ public class RamielConfiguration {
         this.enemyRgb = enemyRgb;
     }
 
-    public void setPersonalSpace(int personalSpace) {
-        this.personalSpace = personalSpace;
-    }
-
     public void setTimeToDisappear(int timeToDisappear) {
         this.timeToDisappear = timeToDisappear;
-    }
-
-    /**
-     * Toggles the render boolean for hoops
-     * @return the new value
-     */
-    public boolean toggleRenderHoops() {
-        this.renderHoops = !renderHoops;
-        return renderHoops;
-    }
-
-    public boolean renderHoops() {
-        return renderHoops;
-    }
-
-    public boolean toggleRenderHitboxes() {
-        this.renderHitboxes = !renderHitboxes;
-        return renderHitboxes;
-    }
-
-    public boolean autoclickerEnabled() {
-        return this.autoclicker;
-    }
-
-    public boolean toggleAutoclicker() {
-        this.autoclicker = !autoclicker;
-        return autoclicker;
-    }
-
-    public boolean renderHitboxes() {
-        return renderHitboxes;
     }
 
     public RGBValue getFriendlyRgb() {
@@ -278,19 +214,7 @@ public class RamielConfiguration {
         return enemyRgb;
     }
 
-    public int getPersonalSpace() {
-        return personalSpace;
-    }
-
     public int getTimeToDisappear() {
         return timeToDisappear;
-    }
-
-    public int getClicksPerSecond() {
-        return clicksPerSecond;
-    }
-
-    public void setClicksPerSecond(int clicksPerSecond) {
-        this.clicksPerSecond = clicksPerSecond;
     }
 }

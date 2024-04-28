@@ -5,15 +5,12 @@ import gov.kallos.ramiel.client.config.RGBValue;
 import gov.kallos.ramiel.client.manager.PlayerRegistry;
 import gov.kallos.ramiel.client.model.Location;
 import gov.kallos.ramiel.client.model.RamielPlayer;
-import gov.kallos.ramiel.client.model.Standing;
-import gov.kallos.ramiel.client.util.BoxUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.*;
-import net.minecraft.util.shape.VoxelShape;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +23,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import static gov.kallos.ramiel.client.util.RenderUtil.drawHoop;
 import static gov.kallos.ramiel.client.util.RenderUtil.drawWaypoint;
 
 @Mixin(WorldRenderer.class)
@@ -85,23 +81,8 @@ public abstract class WorldRendererMixin {
                     RamielPlayer rplayer = PlayerRegistry.getInstance().getOrCreatePlayer(playerEntity.getDisplayName().getString());
                     RGBValue standingRgb = RamielClient.getInstance().getConfig().getRgbByStanding(rplayer.getStanding());
 
-                    if(RamielClient.getInstance().getConfig().renderHoops()) {
-                        drawHoop(matrixStack, (float) x,
-                                (float) y - 1.5F, (float) z, ColorHelper.Argb.getArgb(1, standingRgb.getR(), standingRgb.getG(), standingRgb.getB()),
-                                100);
-                    }
-
-                    if(RamielClient.getInstance().getConfig().renderHitboxes()) {
-                        Tessellator tes = Tessellator.getInstance();
-                        BufferBuilder buf = tes.getBuffer();
-                        BoxUtil.drawBox(matrixStack, tes, buf, playerEntity,
-                                (float) x,(float)  y - 2.5F, (float) z
-                                , standingRgb.getRBox(), standingRgb.getGBox()
-                                , standingRgb.getBBox(), standingRgb.getRBox(), standingRgb.getGBox(), standingRgb.getBBox(), 1, 3.0F);
-                    }
-
                     //Once you're close enough waypoints shouldn't appear.
-                    if (dist < RamielClient.getInstance().getConfig().getPersonalSpace()) {
+                    if (dist < 16) {
                         continue;
                     }
 
@@ -114,14 +95,7 @@ public abstract class WorldRendererMixin {
                         viewDist = maxDist;
                     }
                     float scale = (float) (0.0025D * (viewDist + 4.0D));
-                    String altText = rplayer.isAlt() ? "[" + rplayer.getMain() + "]" : "";
-                    String waypointText = rplayer.getUsername() + " " + altText + " (" + (int) dist + "m) ";
-                    if(rplayer.getStanding().equals(Standing.FOCUSED)) {
-                        //VoxelShape voxelShape = playerEntity.getBlockStateAtPos().getOutlineShape(MinecraftClient.getInstance().world,
-                        //        MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getBlockPos(), ShapeContext.of(playerEntity));
-                        //drawShapeOutline(matrixStack, voxelShape, x, y, z, 1, standingRgb.r, standingRgb.g, standingRgb.b);
-                    } else {
-                    }
+                    String waypointText = rplayer.getUsername() + " (" + (int) dist + "m) ";
                     drawWaypoint(matrixStack,
                             game.textRenderer,
                             waypointText,
@@ -164,8 +138,7 @@ public abstract class WorldRendererMixin {
                     viewDist = maxDist;
                 }
                 float scale = (float) (0.0025D * (viewDist + 4.0D));
-                String altText = cachedPlayer.isAlt() ? " [" + cachedPlayer.getMain() + "] " : "";
-                String waypointText = cachedPlayer.getUsername() + altText + "(" + (int) dist + "m) " + formatAge(cachedPlayer.getLastUpdate());
+                String waypointText = cachedPlayer.getUsername() + "(" + (int) dist + "m) " + formatAge(cachedPlayer.getLastUpdate());
                 RGBValue standingRgb = RamielClient.getInstance().getConfig().getRgbByStanding(cachedPlayer.getStanding());
                 drawWaypoint(matrixStack,
                         game.textRenderer,
@@ -176,27 +149,6 @@ public abstract class WorldRendererMixin {
                         game.getEntityRenderDispatcher().getRotation());
             }
         }
-    }
-
-    //TODO fix (maybe use for focus)
-    private static void drawShapeOutline(MatrixStack matrices, VoxelShape voxelShape, double x, double y, double z, float alpha, float red, float g, float b) {
-        MatrixStack.Entry entry = matrices.peek();
-        Tessellator tes = Tessellator.getInstance();
-        BufferBuilder bb = tes.getBuffer();
-        bb.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
-        voxelShape.forEachEdge((k, l, m, n, o, p) -> {
-            float q = (float)(n - k);
-            float r = (float)(o - l);
-            float s = (float)(p - m);
-            float t = MathHelper.sqrt(q * q + r * r + s * s);
-            q /= t;
-            r /= t;
-            s /= t;
-            bb.vertex(entry.getPositionMatrix(), (float)(k + x), (float)(l + y), (float)(m + z)).color(alpha, red, g, b).normal(entry.getNormalMatrix(), q, r, s).next();
-            bb.vertex(entry.getPositionMatrix(), (float)(n + x), (float)(o + y), (float)(p + z)).color(alpha, red, g, b).normal(entry.getNormalMatrix(), q, r, s).next();
-        });
-        tes.draw();
-        matrices.pop();
     }
 
     /**

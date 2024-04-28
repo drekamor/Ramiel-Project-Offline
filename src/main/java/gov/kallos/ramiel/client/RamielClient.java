@@ -5,8 +5,6 @@ import gov.kallos.ramiel.client.gui.ConfigGUI;
 import gov.kallos.ramiel.client.manager.PlayerRegistry;
 import gov.kallos.ramiel.client.model.RamielPlayer;
 import gov.kallos.ramiel.client.model.Standing;
-import gov.kallos.ramiel.client.util.Autoclicker;
-import gov.kallos.ramiel.client.util.OutlineUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -39,17 +37,11 @@ public class RamielClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("ramiel");
     public static final File DIRECTORY = new File(MinecraftClient.getInstance().runDirectory, "ramielclient");
 
-    public static final String STABILITY = "BETA";
+    public static final String STABILITY = "ALPHA";
 
-    public static final double VERSION = 1.2;
+    public static final double VERSION = 2.0;
 
     private RamielConfiguration CONFIG;
-
-    private Timer locationTimer = new Timer("Ramiel Location Scheduler");
-
-    public static final String STANDINGS_REPO = "https://pastebin.com/raw/pAyuwiNV";
-
-    public static final String ALLOWED_SERVER = "pvp.citadelpvp.net";
 
     private static final String PREFIX = Formatting.DARK_GRAY + "[" + Formatting.GOLD + "Ramiel" + Formatting.DARK_GRAY + "] ";
 
@@ -68,21 +60,7 @@ public class RamielClient implements ClientModInitializer {
         INSTANCE = this;
         enabled = true; //Enabled by default.
         CONFIG = new RamielConfiguration(DIRECTORY);
-        LOGGER.info("-=<*>=- KALLOS GOVERNMENT PROPERTY -=<*>=-");
-        LOGGER.info("UNAUTHORIZED USERS WILL BE PEARLED");
-        LOGGER.info("Attention! This is a " + STABILITY + " BUILD");
-        LOGGER.info("Currently active version " + VERSION + "-" + STABILITY);
         DIRECTORY.mkdir();
-
-
-
-        LOGGER.info("Starting our json load...");
-        PlayerRegistry.getInstance().loadStandingsFromRepository(STANDINGS_REPO);
-
-        //Register autoclicker info
-        Autoclicker clicker = new Autoclicker();
-
-        EntityRendererRegistry.INSTANCE.register(EntityType.PLAYER, (dispatcher) -> new OutlineUtil(dispatcher, false));
 
         // Register the event handler for ticking
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -106,35 +84,14 @@ public class RamielClient implements ClientModInitializer {
         CONFIG.save();
     }
 
-    private PlayerEntity getPlayerUnderCrosshair() {
-        try {
-            if(MinecraftClient.getInstance().crosshairTarget.getType() == HitResult.Type.BLOCK) { return null; }
-            Entity entityHit = MinecraftClient.getInstance().targetedEntity;
-            if(!(entityHit instanceof PlayerEntity)) return null;
-            final PlayerEntity player = (PlayerEntity) entityHit;
-            return player;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private void registerBinds() {
-        KeyBinding modEnableBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Visuals Toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_INSERT, "Ramiel"));
         KeyBinding incrementDistanceBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Increment Waypoint Distance", InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_EQUAL, "Ramiel"));
         KeyBinding decrementDistanceBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Decrement Waypoint Distance", InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_MINUS, "Ramiel"));
         KeyBinding modConfigScreenBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_COMMA, "Ramiel"));
-        KeyBinding focusPlayerBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Focus Player", InputUtil.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_MIDDLE, "Ramiel"));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while(modEnableBind.wasPressed()) {
-                enabled = !enabled;
-                String status = enabled ? "Enabled" : "Disabled";
-                client.player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + "Visuals " + status), false);
-                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1, 1);
-            }
             while(modConfigScreenBind.wasPressed()) {
                 MinecraftClient.getInstance().setScreen(new ConfigGUI(MinecraftClient.getInstance().currentScreen));
             }
@@ -167,20 +124,6 @@ public class RamielClient implements ClientModInitializer {
                 }
                 client.player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + "Decreased Waypoint Distance to " + Formatting.AQUA + maxWaypointDist), false);
                 client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1, 1);
-            }
-            while(focusPlayerBind.wasPressed()) {
-                if(getPlayerUnderCrosshair() != null) {
-                    sendPlayerMessage("Focusing " + getPlayerUnderCrosshair().getDisplayName().getString());
-                    PlayerRegistry.getInstance().clearFocus(); //Clear all focused players.
-                    RamielPlayer player = PlayerRegistry.getInstance().getOrCreatePlayer(getPlayerUnderCrosshair().getDisplayName().getString());
-                    if(player.getStanding() == Standing.FOCUSED) {
-                        PlayerRegistry.getInstance().clearFocus();
-                        continue;
-                    } else {
-                        player.setStanding(Standing.FOCUSED);
-                    }
-                    client.player.playSound(SoundEvents.BLOCK_BEACON_POWER_SELECT, 1, 1);
-                }
             }
         });
     }

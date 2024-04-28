@@ -21,10 +21,7 @@ public class ConfigGUI extends GuiRoot {
     private RGBValue friendlyRgb = new RGBValue(-1, -1, -1);
     private RGBValue neutralRgb = new RGBValue(-1, -1, -1);
     private RGBValue enemyRgb = new RGBValue(-1, -1, -1);
-    private int personalSpace = DefaultValues.DEFAULT_PERSONAL_SPACE;
     private int timeToDisappear = DefaultValues.DEFAULT_DISAPPEAR_TIME;
-
-    private int clicksPerSecond = DefaultValues.CLICKS_PER_SECOND;
 
     public ConfigGUI(Screen parentScreen) {
         super(parentScreen, Text.literal(Formatting.GRAY + "Ramiel-Project " + RamielClient.VERSION + "-" + RamielClient.STABILITY));
@@ -115,34 +112,7 @@ public class ConfigGUI extends GuiRoot {
             return false;
         }, "", "b (0-255)"));
         root.add(enemyColours);
-        FlexListLayout decorativeToggles = new FlexListLayout(Vec2.Direction.HORIZONTAL);
-        Button hoopRenderButton = new Button("Render Hoops: " + getBooleanString(RamielClient.getInstance().getConfig().renderHoops()));
-        hoopRenderButton.onClick(b -> {
-            //Toggles hoops.
-            hoopRenderButton.setText(Text.literal("Render Hoops: " + getBooleanString(RamielClient.getInstance().getConfig().toggleRenderHoops())));
-        });
-        decorativeToggles.add(hoopRenderButton);
-        Button hitboxRenderButton = new Button("Render Hitboxes: " + getBooleanString(RamielClient.getInstance().getConfig().renderHitboxes()));
-        hitboxRenderButton.onClick(b -> {
-           hitboxRenderButton.setText(Text.literal("Render Hitboxes: " + getBooleanString(RamielClient.getInstance().getConfig().toggleRenderHitboxes())));
-        });
-        decorativeToggles.add(hitboxRenderButton);
-        root.add(decorativeToggles);
-        //TODO fix sliders :/
-        //ArrayList<GuiElement> sliders = new ArrayList<>();
-        //GuiElement slider = new Slider(new LiteralText("Distance"), "Blocks", 1, 0, 10, 1);
-        //sliders.add(slider);
-        GuiElement[] personalSpace = new GuiElement[2];
-        personalSpace[0] = new Label("Personal Space ");
-        personalSpace[1] = new TextField(b -> {
-            if(validPersonalSpace(b)) {
-                this.personalSpace = Integer.parseInt(b);
-                return true;
-            }
-            return false;
-        }, "", "0-10 Blocks").setMinSize(new Vec2(150, 20));
-        //
-        table.addRow(Arrays.asList(personalSpace));
+
         GuiElement[] timeToDisappear = new GuiElement[2];
         timeToDisappear[0] = new Label("Time to Disappear (Minutes): ");
         timeToDisappear[1] = new TextField(b -> {
@@ -153,24 +123,9 @@ public class ConfigGUI extends GuiRoot {
             return false;
         }, "", "minutes").setMinSize(new Vec2(150, 20));
         table.addRow(Arrays.asList(timeToDisappear));
-        FlexListLayout autoClickerList = new FlexListLayout(Vec2.Direction.HORIZONTAL);
-        Button autoclickerButton = new Button("Autoclicker: " + getBooleanString(RamielClient.getInstance().getConfig().autoclickerEnabled()));
-        autoclickerButton.onClick(client -> {
-            boolean autoclicker = RamielClient.getInstance().getConfig().toggleAutoclicker();
-            autoclickerButton.setText(Text.literal("Autoclicker: " + getBooleanString(autoclicker)));
-        });
-        autoClickerList.add(autoclickerButton);
-        TextField clicksPerSecondField = new TextField(b -> {
-            if(isInteger(b)) {
-                this.clicksPerSecond = Integer.parseInt(b);
-                return true;
-            }
-            return false;
-        }, "", "CPS");
-        autoClickerList.add(clicksPerSecondField);
+
 
         root.add(table);
-        root.add(autoClickerList);
         return new TableLayout()
                 .addRow((List<GuiElement>) Arrays.asList((GuiElement[])new GuiElement[]{new Spacer().setWeight(new Vec2(999, 1))}))
                 .addRow((List<GuiElement>)Arrays.asList((GuiElement[])new GuiElement[]{null, root}))
@@ -186,10 +141,6 @@ public class ConfigGUI extends GuiRoot {
             RamielClient.getInstance().getConfig().setEnemyRgb(enemyRgb);
         } else if(timeToDisappear != DefaultValues.DEFAULT_DISAPPEAR_TIME) {
             RamielClient.getInstance().getConfig().setTimeToDisappear(timeToDisappear);
-        } else if(personalSpace != DefaultValues.DEFAULT_PERSONAL_SPACE) {
-            RamielClient.getInstance().getConfig().setPersonalSpace(personalSpace);
-        } else if(clicksPerSecond != DefaultValues.CLICKS_PER_SECOND) {
-            RamielClient.getInstance().getConfig().setClicksPerSecond(clicksPerSecond);
         }
 
         //Finally, write config.
