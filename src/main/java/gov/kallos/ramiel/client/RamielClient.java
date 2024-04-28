@@ -1,7 +1,6 @@
 package gov.kallos.ramiel.client;
 
 import gov.kallos.ramiel.client.config.RamielConfiguration;
-import gov.kallos.ramiel.client.gui.ConfigGUI;
 import gov.kallos.ramiel.client.manager.PlayerRegistry;
 import gov.kallos.ramiel.client.model.RamielPlayer;
 import gov.kallos.ramiel.client.model.Standing;
@@ -36,10 +35,6 @@ public class RamielClient implements ClientModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("ramiel");
     public static final File DIRECTORY = new File(MinecraftClient.getInstance().runDirectory, "ramielclient");
-
-    public static final String STABILITY = "ALPHA";
-
-    public static final double VERSION = 2.0;
 
     private RamielConfiguration CONFIG;
 
@@ -89,12 +84,8 @@ public class RamielClient implements ClientModInitializer {
                 GLFW.GLFW_KEY_EQUAL, "Ramiel"));
         KeyBinding decrementDistanceBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Decrement Waypoint Distance", InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_MINUS, "Ramiel"));
-        KeyBinding modConfigScreenBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_COMMA, "Ramiel"));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while(modConfigScreenBind.wasPressed()) {
-                MinecraftClient.getInstance().setScreen(new ConfigGUI(MinecraftClient.getInstance().currentScreen));
-            }
             while(incrementDistanceBind.wasPressed()) {
                 if(maxWaypointDist >= 12000) {
                     //Do nothing.
