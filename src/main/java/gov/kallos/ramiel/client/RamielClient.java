@@ -2,27 +2,20 @@ package gov.kallos.ramiel.client;
 
 import gov.kallos.ramiel.client.config.RamielConfiguration;
 import gov.kallos.ramiel.client.gui.ConfigGUI;
-import gov.kallos.ramiel.client.manager.PlayerRegistry;
-import gov.kallos.ramiel.client.model.RamielPlayer;
-import gov.kallos.ramiel.client.model.Standing;
+import gov.kallos.ramiel.client.util.IceRoadMacro;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.hit.HitResult;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +47,8 @@ public class RamielClient implements ClientModInitializer {
     public boolean visualsEnabled() { return enabled; }
 
     public int getMaxWaypointDist() { return maxWaypointDist; }
+
+    private final IceRoadMacro macro = new IceRoadMacro();
 
     @Override
     public void onInitializeClient() {
@@ -87,6 +82,8 @@ public class RamielClient implements ClientModInitializer {
     private void registerBinds() {
         KeyBinding incrementDistanceBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Increment Waypoint Distance", InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_EQUAL, "Ramiel"));
+        KeyBinding iceroadMacro = KeyBindingHelper.registerKeyBinding(new KeyBinding("Iceroad Macro", InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_BACKSPACE, "Ramiel"));
         KeyBinding decrementDistanceBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Decrement Waypoint Distance", InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_MINUS, "Ramiel"));
         KeyBinding modConfigScreenBind = KeyBindingHelper.registerKeyBinding(new KeyBinding("Config GUI", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_COMMA, "Ramiel"));
@@ -125,6 +122,13 @@ public class RamielClient implements ClientModInitializer {
                 client.player.sendMessage(Text.literal(PREFIX + Formatting.GRAY + "Decreased Waypoint Distance to " + Formatting.AQUA + maxWaypointDist), false);
                 client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS.value(), 1, 1);
             }
+
+            while(iceroadMacro.wasPressed()) {
+                macro.toggle();
+            }
+
+            macro.tick();
+
         });
     }
 
